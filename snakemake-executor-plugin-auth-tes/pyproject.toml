@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "snakemake-executor-plugin-auth-tes"
+version = "0.1.0"
+description = "A Snakemake executor plugin for submitting jobs via GA4GH TES."
+authors = [
+    "Sven Twardziok <sven.twardziok@bih-charite.de>",
+    "Alex Kanitz <alexander.kanitz@alumni.ethz.ch>",
+    "Valentin Schneider-Lunitz <valentin.schneider-lunitz@bih-charite.de>",
+    "Johannes Koester <johannes.koester@uni-due.de>"
+]
+readme = "README.md"
+license = "MIT"
+repository = "https://github.com/KrKOo/snakemake-auth-plugins"
+documentation = "https://snakemake.github.io/snakemake-plugin-catalog/plugins/executor/tes.html"
+keywords = ["snakemake", "plugin", "executor", "tes"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+snakemake-interface-common = "^1.14.0"
+snakemake-interface-executor-plugins = "^9.0.0"
+py-tes = "^0.4.2"
+requests = "^2.26.0"
+PyJWT="^2.8.0"
+cryptography="^42.0.5"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.9.1"
+flake8 = "^6.1.0"
+coverage = "^7.3.1"
+pytest = "^7.4.2"
+snakemake = {git = "https://github.com/snakemake/snakemake.git"}
+snakemake-storage-plugin-s3 = "^0.2.7"
+
+[tool.coverage.run]
+omit = [".*", "*/site-packages/*", "Snakefile"]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

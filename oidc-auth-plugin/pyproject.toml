@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "oidc-auth-plugin"
+version = "0.1.0"
+description = "A OIDC auth plugin."
+authors = [
+    "Kristian Kovac <krkoo.123@gmail.com>",
+]
+readme = "README.md"
+license = "MIT"
+repository = "https://github.com/KrKOo/snakemake-auth-plugins"
+keywords = ["snakemake", "plugin", "auth"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+requests = "^2.26.0"
+PyJWT="^2.8.0"
+cryptography="^42.0.5"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.9.1"
+flake8 = "^6.1.0"
+coverage = "^7.3.1"
+pytest = "^7.4.2"
+
+[tool.coverage.run]
+omit = [".*", "*/site-packages/*", "Snakefile"]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

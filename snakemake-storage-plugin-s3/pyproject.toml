@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "snakemake-storage-plugin-s3"
+version = "0.2.10"
+description = "A Snakemake storage plugin for S3 API storage (AWS S3, MinIO, etc.)"
+authors = ["Johannes Koester <johannes.koester@uni-due.de>"]
+readme = "README.md"
+repository = "https://github.com/KrKOo/snakemake-auth-plugins"
+documentation = "https://snakemake.github.io/snakemake-plugin-catalog/plugins/storage/s3.html"
+license = "MIT"
+keywords = ["snakemake", "plugin", "storage", "s3"]
+
+
+[tool.poetry.dependencies]
+python = "^3.11"
+snakemake-interface-common = "^1.14.0"
+snakemake-interface-storage-plugins = "^3.0.0"
+boto3 = "^1.33"
+botocore = "^1.33"
+urllib3 = ">=2.0,<2.2"  # https://github.com/boto/botocore/issues/3111#issuecomment-1944524714
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.9.1"
+flake8 = "^6.1.0"
+coverage = "^7.3.1"
+pytest = "^7.4.2"
+snakemake = {git="https://github.com/snakemake/snakemake.git"}
+setuptools = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.coverage.run]
+omit = [".*", "*/site-packages/*", "Snakefile"]
