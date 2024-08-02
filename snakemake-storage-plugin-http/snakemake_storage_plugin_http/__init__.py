@@ -39,11 +39,12 @@ logger = get_logger()
 class HTTPTokenAuth(AuthBase):
     def __init__(self, token):
         self.auth_service = AuthService(
-            token,
+            os.environ["ACCESS_TOKEN"],
             os.environ["CLIENT_ID"],
             os.environ["CLIENT_SECRET"],
             os.environ["OIDC_URL"],
             os.environ["AUDIENCE"],
+            do_dynreg=os.environ.get("SNAKEMAKE_MASTER", "false").lower() == "true",
         )
 
     def __call__(self, r):

@@ -103,6 +103,7 @@ class Executor(RemoteExecutor):
                 os.environ["CLIENT_SECRET"],
                 os.environ["OIDC_URL"],
                 os.environ["AUDIENCE"],
+                do_dynreg=os.environ.get("SNAKEMAKE_MASTER", "false").lower() == "true",
             )
 
         self.tes_client = tes.HTTPClient(
@@ -135,6 +136,9 @@ class Executor(RemoteExecutor):
         # submit job here, and obtain job ids from the backend
         try:
             task = self._get_task(job, jobscript)
+            # Refresh now to be sure, that the token is not going to be
+            # refreshed before the tasks starts running.
+            self.auth_service.refresh_token_if_near_expiry()
             self.tes_client.token = self.tes_access_token
             tes_id = self.tes_client.create_task(task)
             self.logger.info(f"[TES] Task submitted: {tes_id}")

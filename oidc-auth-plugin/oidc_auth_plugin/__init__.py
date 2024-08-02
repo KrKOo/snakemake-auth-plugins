@@ -1,4 +1,4 @@
-import asyncio
+import os
 import atexit
 import threading
 import time
@@ -23,24 +23,47 @@ class SingletonMetaclass(type):
 # Singleton class to manage authentication
 class AuthService(metaclass=SingletonMetaclass):
     def __init__(
-        self, initial_token, client_id, client_secret, oidc_url, audience=None
+        self,
+        initial_token,
+        client_id,
+        client_secret,
+        oidc_url,
+        audience=None,
+        do_dynreg=False,
     ):
         self.oidc_url = oidc_url
         self.audience = audience
-        self.initial_client = AuthClient(client_id, client_secret, oidc_url)
-        self._access_token, self._refresh_token = self._exchange_token(
-            self.initial_client,
-            initial_token,
-            ["offline_access", "ga4gh_passport_v1", "openid"],
-        )
-        self.client = self._get_dynreg_client(self.initial_client, oidc_url, audience)
 
-        self._access_token, self._refresh_token = self._exchange_token(
-            self.client,
-            self.access_token,
-            ["offline_access", "ga4gh_passport_v1", "openid"],
-            audience,
-        )
+        if do_dynreg:
+            self.initial_client = AuthClient(client_id, client_secret, oidc_url)
+            self._access_token, self._refresh_token = self._exchange_token(
+                self.initial_client,
+                initial_token,
+                ["offline_access", "ga4gh_passport_v1", "openid"],
+            )
+
+            self.client = self._get_dynreg_client(
+                self.initial_client, oidc_url, audience
+            )
+
+            self._access_token, self._refresh_token = self._exchange_token(
+                self.client,
+                self._access_token,
+                ["offline_access", "ga4gh_passport_v1", "openid"],
+                audience,
+            )
+            os.environ["CLIENT_ID"] = self.client.client_id
+            os.environ["CLIENT_SECRET"] = self.client.client_secret
+        else:
+            self.client = AuthClient(client_id, client_secret, oidc_url)
+            self._access_token, self._refresh_token = self._exchange_token(
+                self.client,
+                initial_token,
+                ["offline_access", "ga4gh_passport_v1", "openid"],
+                audience,
+            )
+
+        os.environ["ACCESS_TOKEN"] = self._access_token
 
         refresh_thread = threading.Thread(
             target=self._run_periodic_refresh, daemon=True
@@ -48,7 +71,8 @@ class AuthService(metaclass=SingletonMetaclass):
         refresh_thread.start()
 
         def cleanup():
-            self.client.deregister_self()
+            if do_dynreg:
+                self.client.deregister_self()
 
         atexit.register(cleanup)
 
@@ -56,11 +80,17 @@ class AuthService(metaclass=SingletonMetaclass):
         self._access_token, self._refresh_token = self.client.refresh_access_token(
             self._refresh_token
         )
+        os.environ["ACCESS_TOKEN"] = self._access_token
 
     def _run_periodic_refresh(self):
         while True:
+            self.refresh_token_if_near_expiry(5 * 60)
+
+            time.sleep(4 * 60)
+
+    def refresh_token_if_near_expiry(self, time_offset=60):
+        if self.client.is_token_expired(self._access_token, time_offset):
             self.refresh_token()
-            time.sleep(10)
 
     @property
     def access_token(self):
@@ -123,7 +153,7 @@ class AuthClient:
             data = jwt.decode(
                 token, key, [header["alg"]], options={"verify_aud": False}
             )
-            if data["exp"] - time_offset < 0:
+            if data["exp"] - time_offset < time.time():
                 return True
         except jwt.ExpiredSignatureError:
             return True

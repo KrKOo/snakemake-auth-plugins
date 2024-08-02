@@ -165,11 +165,13 @@ class StorageProvider(StorageProviderBase):
             }
 
         auth_service = AuthService(
-            self.settings.token,
+            # self.settings.token,
+            os.environ.get("ACCESS_TOKEN"),
             os.environ.get("CLIENT_ID"),
             os.environ.get("CLIENT_SECRET"),
             os.environ.get("OIDC_URL"),
             os.environ.get("AUDIENCE"),
+            do_dynreg=os.environ.get("SNAKEMAKE_MASTER", "false").lower() == "true",
         )
 
         return {
