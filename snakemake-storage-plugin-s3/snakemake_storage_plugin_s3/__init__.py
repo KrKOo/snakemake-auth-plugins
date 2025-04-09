@@ -57,7 +57,7 @@ class StorageProviderSettings(StorageProviderSettingsBase):
             # For other items, we rather recommend to let people use a profile
             # for setting defaults
             # (https://snakemake.readthedocs.io/en/stable/executing/cli.html#profiles).
-            "env_var": False,
+            "env_var": True,
             # Optionally specify that setting is required when the executor is in use.
             "required": False,
         },
@@ -89,7 +89,7 @@ class StorageProviderSettings(StorageProviderSettingsBase):
         },
     )
     signature_version: Optional[str] = field(
-        default=None,
+        default="v4",
         metadata={
             "help": "S3 signature version",
             "env_var": False,
@@ -145,6 +145,8 @@ class StorageProvider(StorageProviderBase):
             endpoint_url=self.settings.endpoint_url,
             config=boto3.session.Config(
                 signature_version=self.settings.signature_version,
+                request_checksum_calculation="when_required", 
+                response_checksum_validation="when_required",
                 retries={
                     "max_attempts": self.settings.retries,
                     "mode": "standard",
@@ -154,7 +156,7 @@ class StorageProvider(StorageProviderBase):
         )
 
     def get_fresh_credentials(self):
-        if not self.settings.token and not os.environ.get("ACCESS_TOKEN", None):
+        if not self.settings.token:
             return {
                 "access_key": self.settings.access_key,
                 "secret_key": self.settings.secret_key,
