@@ -154,7 +154,7 @@ class StorageProvider(StorageProviderBase):
         )
 
     def get_fresh_credentials(self):
-        if not self.settings.token:
+        if not self.settings.token and not os.environ.get("ACCESS_TOKEN", None):
             return {
                 "access_key": self.settings.access_key,
                 "secret_key": self.settings.secret_key,
