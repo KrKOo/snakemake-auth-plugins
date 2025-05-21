@@ -2,7 +2,7 @@
 name = "snakemake-storage-plugin-s3"
 version = "0.2.10"
 description = "A Snakemake storage plugin for S3 API storage (AWS S3, MinIO, etc.)"
-authors = ["Johannes Koester <johannes.koester@uni-due.de>"]
+authors = ["Johannes Koester <johannes.koester@uni-due.de>",     "Kristian Kovac <krkoo.123@gmail.com>"]
 readme = "README.md"
 repository = "https://github.com/KrKOo/snakemake-auth-plugins"
 documentation = "https://snakemake.github.io/snakemake-plugin-catalog/plugins/storage/s3.html"

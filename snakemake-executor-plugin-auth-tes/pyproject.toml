@@ -6,7 +6,8 @@ authors = [
     "Sven Twardziok <sven.twardziok@bih-charite.de>",
     "Alex Kanitz <alexander.kanitz@alumni.ethz.ch>",
     "Valentin Schneider-Lunitz <valentin.schneider-lunitz@bih-charite.de>",
-    "Johannes Koester <johannes.koester@uni-due.de>"
+    "Johannes Koester <johannes.koester@uni-due.de>",
+    "Kristian Kovac <krkoo.123@gmail.com>"
 ]
 readme = "README.md"
 license = "MIT"

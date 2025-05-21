@@ -5,6 +5,7 @@ description = "Snakemake storage plugin for downloading input files from HTTP(s)
 authors = [
     "Christopher Tomkins-Tinch <tomkinsc@broadinstitute.org>",
     "Johannes Koester <johannes.koester@uni-due.de>",
+    "Kristian Kovac <krkoo.123@gmail.com>"
 ]
 readme = "README.md"
 repository = "https://github.com/KrKOo/snakemake-auth-plugins"
